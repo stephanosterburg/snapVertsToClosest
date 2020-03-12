@@ -9,7 +9,7 @@ INITIALISATION_DISTANCE = 2 ** 32 - 1
 
 
 def get_magnitude(point_a, point_b):
-    """This function returns the magnitude of a vector.
+    """get the magnitude of a vector
 
     :param point_a: point a (type: tuple)
     :param point_b: point b (type: tuple)
@@ -26,7 +26,7 @@ def get_magnitude(point_a, point_b):
 
 
 def get_shapes(object_, fullPathState=False, noIntermediateState=True):
-    """This function returns shapes of the provided object.
+    """get shapes of the provided object
 
     :param object_: current object (type:string)
     :param fullPathState: current full path state (type:  boolean)
@@ -43,7 +43,7 @@ def get_shapes(object_, fullPathState=False, noIntermediateState=True):
 
 
 def get_selected_reference_mesh():
-    """This function gets the reference object."""
+    """get the reference object."""
 
     selection = cmds.ls(sl=True, type="transform")
 
@@ -52,7 +52,7 @@ def get_selected_reference_mesh():
 
 
 def load_plugin(plugin):
-    """This function loads a plugin.
+    """load a given plugin
 
     :param plugin: name of plugin (type: string)
     """
@@ -61,7 +61,7 @@ def load_plugin(plugin):
 
 
 def snap_to_closest_vertex(referenceObject, vertices, tolerance):
-    """This function snaps vertices to onto the reference object.
+    """snap vertices to onto the reference object
 
     :param referenceObject: reference mesh (type: string)
     :param vertices: vertices list (type: list)
@@ -113,20 +113,19 @@ def snap_to_closest_vertex(referenceObject, vertices, tolerance):
 
 
 def snap_it():
-    """This function opens online repository."""
+    """get reference mesh and vertices from mesh to snap"""
 
-    reference_object = cmds.textField("referenceObject_TextField", query=True, text=True)
+    ref_obj = cmds.textField("referenceObject_TextField", query=True, text=True)
+    ref_obj_shapes = cmds.objExists(ref_obj) and get_shapes(ref_obj) or None
 
-    reference_object_shapes = cmds.objExists(reference_object) and get_shapes(reference_object) or None
+    sel = cmds.ls(sl=True, o=True)[0]
+    vtxs = cmds.ls('{}.vtx[:]'.format(sel), fl=True)
 
-    selection = cmds.ls(sl=True, fl=True)
-    selected_vertices = [node for node in selection if re.search("\.vtx\[[0-9]*\]", node)]
-    reference_object_shapes and selected_vertices and snap_to_closest_vertex(reference_object_shapes[0],
-                                                                             selected_vertices, TOLERANCE)
+    ref_obj_shapes and vtxs and snap_to_closest_vertex(ref_obj_shapes[0], vtxs, TOLERANCE)
 
 
 def main():
-    """This function launches snap_vertex_to_closest window."""
+    """launch snap_vertex_to_closest window."""
 
     cmds.windowPref(enableAll=False)
 
